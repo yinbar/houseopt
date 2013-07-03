@@ -10,7 +10,7 @@ class House:
         self.customers.append(customer.name)
 
     def add_to_problem(self, lp):
-        lp.add_dependent_variable(
+        lp.add_dependent_variable(('HOUSE', self.name),
             {(customer, self.name): 1 for customer in self.customers},
             0, self.count)
 
@@ -30,7 +30,7 @@ class Customer:
         for house, pref in shuffled(self.houses.items()):
             lp.add_binary_variable((self.name, house), pref)
         
-        lp.add_dependent_variable(
+        lp.add_dependent_variable(('CUSTOMER', self.name),
             {(self.name, house): 1 for house in self.houses},
             0, 1)
 
