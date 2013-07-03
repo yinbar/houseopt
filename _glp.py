@@ -1,8 +1,5 @@
 import ctypes, os
-try:
-    from .util import throw
-except ValueError:
-    from util import throw
+from .util import throw
 
 if os.name == 'posix':
     GLP = ctypes.CDLL('libglpk.so')
