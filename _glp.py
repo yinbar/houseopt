@@ -45,6 +45,10 @@ set_obj_coef = GLP.glp_set_obj_coef
 set_obj_coef.restype = None
 set_obj_coef.argtypes = [glp_prob_p, ctypes.c_int, ctypes.c_double]
 
+mip_obj_val = GLP.glp_mip_obj_val
+mip_obj_val.restype = ctypes.c_double
+mip_obj_val.argtypes = [glp_prob_p]
+
 # Rows
 add_rows = GLP.glp_add_rows
 add_rows.restype = ctypes.c_int
@@ -97,12 +101,12 @@ mip_col_val.argtypes = [glp_prob_p, ctypes.c_int]
 
 __all__ = ['create_prob', 'delete_prob', 'simplex', 'intopt',
 
-           'set_obj_dir', 'set_obj_coef',
+           'set_obj_dir', 'set_obj_coef', 'mip_obj_val',
 
            'add_rows', 'set_row_name', 'set_row_bnds', 'set_mat_row',
 
            'add_cols', 'set_col_name', 'set_col_bnds', 'set_col_kind',
-           'mip_col_val'
+           'mip_col_val',
 
            'GLP_MIN', 'GLP_MAX',
            'GLP_FR', 'GLP_LO', 'GLP_UP', 'GLP_DB', 'GLP_FX',

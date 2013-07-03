@@ -74,12 +74,19 @@ class LinearProblem:
             _glp.set_obj_dir(self.lp, _glp.GLP_MIN)
             
     def solve(self):
-        _glp.simplex(self.lp, None)
-        _glp.intopt(self.lp, None)
+        st = _glp.simplex(self.lp, None)
+        if st:
+            return st
 
+        st = _glp.intopt(self.lp, None)
+        return st
+    
     def get_solution_vars(self):
         return {name: _glp.mip_col_val(self.lp, idx) for
                 (name, idx) in self.col_name_to_idx.items()}
+
+    def get_solution_obj(self):
+        return _glp.mip_obj_val(self.lp)
     
     def __del__(self):
         _glp.delete_prob(self.lp)

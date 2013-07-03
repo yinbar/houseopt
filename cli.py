@@ -10,7 +10,11 @@ houses = parse.parse_houses(prob, open(hfile))
 parse.parse_customers(prob, open(cfile), houses, 0, 5)
 
 prob.add_to_problem(lp)
-lp.solve()
+st = lp.solve()
+if st:
+    raise ValueError('Solution Failed. Code {}'.format(st))
+
+print('Achieved objective', lp.get_solution_obj())
 
 for (customer, house), pref in sorted(lp.get_solution_vars().items()):
     if pref > 0.5:
