@@ -64,7 +64,6 @@ class LinearProblem:
         _glp.set_row_name(self.lp, varidx, varid)
         self._add_constraints(self, _glp.set_row_bnds, varidx, mini, maxi)
         _glp.set_mat_row(self.lp, varidx, *(zip(*shuffled(coef.items()))))
-        
 
     def solve(self):
         _glp.simplex(self.lp, None)
