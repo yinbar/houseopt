@@ -16,6 +16,12 @@ filetypes = [('Text File', '*.txt'), ('All Files', '*.*')]
 min_pref = 0
 max_pref = 5
 
+def dump_solution(f, sol):
+    for (customer, house), val in sorted(sol.items()):
+        if val > 0.5:
+            f.write('{} {}\n'.format(customer.decode('utf-8'),
+                                     house.decode('utf-8')))
+
 def main():
     root = tk.Tk()
 
@@ -70,7 +76,19 @@ Error Code: " + str(err))
 
     def make_ksave(k):
         def do_save():
-            pass
+            fn = tk.filedialog.asksaveasfilename(filetypes=filetypes)
+            if not fn:
+                return
+
+            try:
+                f = open(fn, 'w')
+                dump_solution(f, solution[k])
+                f.close()
+            except IOError:
+                tk.messagebox.showerror('Error',
+                                        'Failed to save solution')
+                return
+                
         
         butt = ttk.Button(app, text=savetext.format(k, 0), command=do_save,
                           state=tk.DISABLED)
