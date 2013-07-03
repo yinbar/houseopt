@@ -12,7 +12,7 @@ parse.parse_customers(prob, open(cfile), houses, 0, 5)
 prob.add_to_problem(lp)
 lp.solve()
 
-for (customer, house), pref in sorted(lp.get_solution_vars()):
+for (customer, house), pref in sorted(lp.get_solution_vars().items()):
     if pref > 0.5:
         sys.stderr.write('{} {}\n'.format(customer.decode('utf-8'),
                                           house.decode('utf-8')))

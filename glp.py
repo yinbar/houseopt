@@ -12,7 +12,7 @@ class LinearProblem:
         self.col_name_to_id = {}
         self.col_name_to_idx = {}
 
-    def _get_row_id(self, varname):
+    def _get_row_id(self, var):
         if var in self.row_name_to_id:
             return self.row_name_to_id[var]
 
@@ -22,7 +22,7 @@ class LinearProblem:
         
         return self.row_name_to_id[var]
 
-    def _get_col_id(self, varname):
+    def _get_col_id(self, var):
         if var in self.col_name_to_id:
             return self.col_name_to_id[var]
 
@@ -48,23 +48,31 @@ class LinearProblem:
             csf(self.lp, cr, _glp.GLP_DB, mini, maxi)
 
     def add_independent_variable(self, var, coef, mini, maxi, vt):
-        varidx = glp.add_cols(self.lp, 1)
-        self.col_name_to_idx[var] = idx
+        varidx = _glp.add_cols(self.lp, 1)
+        self.col_name_to_idx[var] = varidx
         varid = self._get_col_id(var)
 
         _glp.set_col_name(self.lp, varidx, varid)
         _glp.set_obj_coef(self.lp, varidx, coef)
-        self._add_constraints(self, _glp.set_col_bnds, varidx, mini, maxi)
+        self._add_constraints(_glp.set_col_bnds, varidx, mini, maxi)
         _glp.set_col_kind(self.lp, varidx, vt)
 
     def add_dependent_variable(self, var, coefs, mini, maxi):
-        varidx = glp.add_rows(self.lp, 1)
+        varidx = _glp.add_rows(self.lp, 1)
         varid = self._get_row_id(var)
 
         _glp.set_row_name(self.lp, varidx, varid)
-        self._add_constraints(self, _glp.set_row_bnds, varidx, mini, maxi)
-        _glp.set_mat_row(self.lp, varidx, *(zip(*shuffled(coef.items()))))
+        self._add_constraints(_glp.set_row_bnds, varidx, mini, maxi)
+        _glp.set_mat_row(self.lp, varidx, *(zip(*((self.col_name_to_idx[i],j)
+                                                for (i,j) in
+                                                shuffled(coefs.items())))))
 
+    def set_obj_dir(self, maximize):
+        if maximize:
+            _glp.set_obj_dir(self.lp, _glp.GLP_MAX)
+        else:
+            _glp.set_obj_dir(self.lp, _glp.GLP_MIN)
+            
     def solve(self):
         _glp.simplex(self.lp, None)
         _glp.intopt(self.lp, None)

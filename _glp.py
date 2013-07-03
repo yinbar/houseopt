@@ -66,12 +66,12 @@ _set_mat_row.argtypes = [glp_prob_p, ctypes.c_int, ctypes.c_int,
                          ctypes.POINTER(ctypes.c_double)]
 
 set_mat_row = lambda lp, row, ind, val: _set_mat_row(
-    glp_prob_p(lp),
+    lp,
     ctypes.c_int(row),
     ctypes.c_int(len(ind)),
-    (ctypes.c_int * len(ind))(ind),
-    (ctypes.c_double * len(val))(val)) if len(ind) == len(val) else throw(
-        ValueError)
+    (ctypes.c_int * (len(ind)+1))(0, *ind),
+    (ctypes.c_double * (len(val)+1))(0, *val)) if len(ind) == len(
+        val) else throw(ValueError)
 
 # Columns
 add_cols = GLP.glp_add_cols

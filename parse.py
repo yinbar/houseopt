@@ -32,7 +32,7 @@ def parse_customers(problem, customers, houses, min_pref, max_pref):
         name, *prefs = line.split(' ')
 
         try:
-            problem.add_house(name.encode('utf-8'), {
+            problem.add_customer(name.encode('utf-8'), {
                 house.encode('utf-8'): int(pref)
                 for (house,pref) in zip(houses,prefs)
                 if min_pref <= int(pref) <= max_pref})

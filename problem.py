@@ -7,7 +7,7 @@ class House:
         self.customers = set()
 
     def add(self, customer):
-        self.customers.append(customer.name)
+        self.customers.add(customer.name)
 
     def add_to_problem(self, lp):
         lp.add_dependent_variable(('HOUSE', self.name),
@@ -53,16 +53,18 @@ class HousingProblem:
         self.customers[cust.name] = cust
 
         for house,pref in preferences.items():
-            if house not in houses:
+            if house not in self.houses:
                 raise ValueError('Unknown house type {!r}'.format(houses))
 
             if pref != 0:
-                houses[house].add(cust)
-                cust.add(houses[house], pref)
+                self.houses[house].add(cust)
+                cust.add(self.houses[house], pref)
 
     def add_to_problem(self, lp):
-        for customer in customers:
+        lp.set_obj_dir(True)
+        
+        for customer in self.customers.values():
             customer.add_to_problem(lp)
 
-        for house in houses:
+        for house in self.houses.values():
             house.add_to_problem(lp)
