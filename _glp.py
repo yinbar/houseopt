@@ -3,6 +3,9 @@ from .util import throw
 
 if os.name == 'posix':
     GLP = ctypes.CDLL('libglpk.so')
+else:
+    GLP = ctypes.CDLL('glpk.dll')
+
 
 glp_prob_p = ctypes.POINTER(type('glp_prob', (ctypes.Structure,), {}))
 

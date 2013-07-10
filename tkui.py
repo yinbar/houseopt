@@ -3,6 +3,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import tkinter.filedialog
 import tkinter.messagebox
+import traceback
 
 houses = {
     63:['A 2', 'B 2', 'C 2', 'D 1', 'E 2'],
@@ -40,6 +41,9 @@ def main():
             return
 
         for k in sizes:
+            buttons[k].configure(state=tk.DISABLED)
+
+        for k in sizes:
             prob = problem.HousingProblem()
             houses_ = parse.parse_houses(prob, houses[k])
             try:
@@ -51,7 +55,7 @@ def main():
                 return
             except ValueError as e:
                 tk.messagebox.showerror('Error',
-                                        e.args[0])
+                                        traceback.format_exc())
                 return
 
             lp = glp.LinearProblem()
