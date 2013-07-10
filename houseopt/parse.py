@@ -1,27 +1,44 @@
+def positive_int(s):
+    i = int(s)
+    if i < 0:
+        raise ValueError('Not a positive integer: {}'.format(i))
+    return i
+
 def parse_houses(problem, houses):
     result = []
     for line in houses:
-        line = line.strip()
-        
-        if not line:
+        if not line.strip() or line[0] == '#':
             continue
+
+        line = line.strip()
 
         if len(line.split(' ')) != 2:
             raise ValueError('Invalid house line {!r}'.format(line))
 
         name, count = line.split(' ')
         result.append(name)
-
-        try:
-            count_i = int(count)
-            assert count_i >= 0
-        except Exception:
-            raise ValueError('Not a positive number: {!r}'.format(count))
             
-        problem.add_house(name.encode('utf-8'), count_i)
+        problem.add_house(name.encode('utf-8'), positive_int(i))
 
     return result
 
+def read_lines_file(lf, house_types):
+    result = []
+
+    for line in lf:
+        if not line.strip() or line[0] == '#':
+            continue
+
+        parts = line.strip().split(' ')
+        if len(parts) != len(house_types):
+            raise ValueError('Invalid house line {!r}'.format(line))
+
+        first = [(n.encode('utf-8'),positive_int(i))
+                      for (n,i) in zip(house_types,parts)]
+        result.append((sum(c for n,c in first), first))
+
+    return result
+        
 def parse_customers(problem, customers, houses, min_pref, max_pref):
     for line in customers:
         line = line.strip()
