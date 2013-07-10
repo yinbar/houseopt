@@ -23,6 +23,12 @@ def dump_solution(f, sol):
             f.write('{} {}\n'.format(customer.decode('utf-8'),
                                      house.decode('utf-8')))
 
+def commandof(b):
+    def __wrap__(x):
+        b.configure(command=x)
+        return x
+    return __wrap__
+                                     
 def main():
     root = tk.Tk()
 
@@ -35,6 +41,11 @@ def main():
     savetext = 'Save {:2d} ({:03d})'
     solution = {}
 
+
+    load = ttk.Button(app, text='Load Problem')
+    load.pack(side=tk.TOP)
+    
+    @commandof(load)
     def do_load():
         fn = tk.filedialog.askopenfilename(filetypes=filetypes)
         if not fn:
@@ -72,13 +83,11 @@ Error Code: " + str(err))
             solution[k] = lp.get_solution_vars()
             buttons[k].configure(state=tk.NORMAL, text=savetext.format(k,
                                                                     int(obj)))
-            
 
-    load = ttk.Button(app, text='Load Problem', command=do_load)
-    load.pack(side=tk.TOP)
-
-
-    def make_ksave(k):
+    def make_ksave(k):             
+        butt = ttk.Button(app, text=savetext.format(k, 0),
+                          state=tk.DISABLED)
+        @commandof(butt)
         def do_save():
             fn = tk.filedialog.asksaveasfilename(filetypes=filetypes)
             if not fn:
@@ -92,11 +101,8 @@ Error Code: " + str(err))
                 tk.messagebox.showerror('Error',
                                         'Failed to save solution')
                 return
-                
-        
-        butt = ttk.Button(app, text=savetext.format(k, 0), command=do_save,
-                          state=tk.DISABLED)
         butt.pack(side=tk.LEFT)
+
         return butt
 
     buttons = {k:make_ksave(k) for k in sizes}
