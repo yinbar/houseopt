@@ -66,6 +66,7 @@ def main():
 
         for b in buttons:
             b.configure(state=tk.DISABLED)
+        solution.clear()
 
         try:
             problems[:] = parse.read_lines_file(open(fn), house_types)
@@ -85,7 +86,7 @@ def main():
             del problems[:]
 
         for b,(s,_) in zip(buttons,problems):
-            b.configure(text=savetext.format(s,0))          
+            bind_save(b, s)          
 
     @commandof(load)
     def do_load():
@@ -93,14 +94,17 @@ def main():
         if not fn:
             return
 
-        for k in houses:
-            buttons[k].configure(state=tk.DISABLED)
+        for b in buttons:
+            b.configure(state=tk.DISABLED)
 
-        for k in sizes:
+        for b,(k,line) in zip(buttons, problems):
             prob = problem.HousingProblem()
-            houses_ = parse.parse_houses(prob, houses[k])
+
+            for name, count in line:
+                prob.add_house(name, count)
+
             try:
-                parse.parse_customers(prob, open(fn), houses_, min_pref,
+                parse.parse_customers(prob, open(fn), house_types, min_pref,
                                       max_pref)
             except IOError:
                 tk.messagebox.showerror('Error',
@@ -123,12 +127,11 @@ Error Code: " + str(err))
 
             obj = lp.get_solution_obj()
             solution[k] = lp.get_solution_vars()
-            buttons[k].configure(state=tk.NORMAL, text=savetext.format(k,
-                                                                    int(obj)))
+            b.configure(state=tk.NORMAL, text=savetext.format(k,int(obj)))
 
-    def make_ksave(k):             
-        butt = ttk.Button(app, text=savetext.format(k, 0),
-                          state=tk.DISABLED)
+    def bind_save(butt, k):             
+        butt.configure(text=savetext.format(k, 0))
+        
         @commandof(butt)
         def do_save():
             fn = tk.filedialog.asksaveasfilename(filetypes=filetypes)
@@ -143,7 +146,6 @@ Error Code: " + str(err))
                 tk.messagebox.showerror('Error',
                                         'Failed to save solution')
                 return
-        butt.pack(side=tk.LEFT)
 
         return butt
 
