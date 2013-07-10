@@ -12,7 +12,7 @@ houses = {
     }
 
 sizes = [63,77,85]
-filetypes = [('Text File', '*.txt'), ('All Files', '*.*')]
+filetypes = [('Text Documents', '*.txt'), ('All Files', '*.*')]
 
 min_pref = 0
 max_pref = 5
