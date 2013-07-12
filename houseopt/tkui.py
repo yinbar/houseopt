@@ -59,7 +59,7 @@ def main():
     load_houses = ttk.Button(manageframe, text='Load Houses')
     load_houses.pack(side=tk.LEFT)
 
-    load = ttk.Button(manageframe, text='Load Problem')
+    load = ttk.Button(manageframe, text='Load Problem', state=tk.DISABLED)
     load.pack(side=tk.LEFT)
 
     problems = []
@@ -92,7 +92,9 @@ def main():
             del problems[:]
 
         for b,(s,_) in zip(buttons,problems):
-            bind_save(b, s)          
+            bind_save(b, s)
+
+        load.configure(state=tk.NORMAL)
 
     @commandof(load)
     def do_load():

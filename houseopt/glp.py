@@ -63,6 +63,9 @@ class LinearProblem:
 
         _glp.set_row_name(self.lp, varidx, varid)
         self._add_constraints(_glp.set_row_bnds, varidx, mini, maxi)
+        if not coefs:
+            return
+
         _glp.set_mat_row(self.lp, varidx, *(zip(*((self.col_name_to_idx[i],j)
                                                 for (i,j) in
                                                 shuffled(coefs.items())))))
