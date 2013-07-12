@@ -1,8 +1,14 @@
 from . import glp, problem, parse
-import tkinter as tk
-import tkinter.ttk as ttk
-import tkinter.filedialog
-import tkinter.messagebox
+try:
+    import tkinter as tk
+    import tkinter.ttk as ttk
+    import tkinter.filedialog as filedialog
+    import tkinter.messagebox as messagebox
+except ImportError:
+    import Tkinter as tk
+    import ttk
+    import tkFileDialog as filedialog
+    import tkMessageBox as messagebox
 import traceback
 
 # houses = {
@@ -60,7 +66,7 @@ def main():
 
     @commandof(load_houses)
     def do_load_houses():
-        fn = tk.filedialog.askopenfilename(filetypes=filetypes)
+        fn = filedialog.askopenfilename(filetypes=filetypes)
         if not fn:
             return
 
@@ -71,16 +77,16 @@ def main():
         try:
             problems[:] = parse.read_lines_file(open(fn), house_types)
         except IOError:
-            tk.messagebox.showerror('Error',
-                                    'Failed to open houses file')
+            messagebox.showerror('Error',
+                                 'Failed to open houses file')
             return
         except ValueError as e:
-            tk.messagebox.showerror('Error',
+            messagebox.showerror('Error',
                                     traceback.format_exc())
             return
 
         if len(problems) != len(buttons):
-            tk.messagebox.showerror('Error',
+            messagebox.showerror('Error',
                                     'Expected {} housing problems, got {}'.
                                     format(len(problems), len(buttons)))
             del problems[:]
@@ -90,7 +96,7 @@ def main():
 
     @commandof(load)
     def do_load():
-        fn = tk.filedialog.askopenfilename(filetypes=filetypes)
+        fn = filedialog.askopenfilename(filetypes=filetypes)
         if not fn:
             return
 
@@ -107,11 +113,11 @@ def main():
                 parse.parse_customers(prob, open(fn), house_types, min_pref,
                                       max_pref)
             except IOError:
-                tk.messagebox.showerror('Error',
+                messagebox.showerror('Error',
                                         'Failed to open customers file')
                 return
             except ValueError as e:
-                tk.messagebox.showerror('Error',
+                messagebox.showerror('Error',
                                         traceback.format_exc())
                 return
 
@@ -120,7 +126,7 @@ def main():
             err = lp.solve()
 
             if err:
-                tk.messagebox.showerror('Error',
+                messagebox.showerror('Error',
                                         "Couldn't solve linear problem.\n\
 Error Code: " + str(err))
                 return
@@ -134,7 +140,7 @@ Error Code: " + str(err))
         
         @commandof(butt)
         def do_save():
-            fn = tk.filedialog.asksaveasfilename(filetypes=filetypes)
+            fn = filedialog.asksaveasfilename(filetypes=filetypes)
             if not fn:
                 return
 
@@ -143,7 +149,7 @@ Error Code: " + str(err))
                 dump_solution(f, solution[k])
                 f.close()
             except IOError:
-                tk.messagebox.showerror('Error',
+                messagebox.showerror('Error',
                                         'Failed to save solution')
                 return
 

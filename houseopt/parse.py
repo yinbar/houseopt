@@ -46,7 +46,9 @@ def parse_customers(problem, customers, houses, min_pref, max_pref):
         if not line:
             continue
 
-        name, *prefs = line.split(' ')
+        parts = line.split(' ')
+        name = parts[0]
+        prefs = parts[1:]
 
         try:
             problem.add_customer(name.encode('utf-8'), {
